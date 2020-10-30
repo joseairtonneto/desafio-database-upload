@@ -27,7 +27,7 @@ class CreateTransactionService {
 
     if (!checkCategoryExists) {
       const newCategory = categoriesRepository.create({ title: category });
-      await transactionsRepository.save(newCategory);
+      await categoriesRepository.save(newCategory);
     }
 
     const searchCategoryID = await categoriesRepository.find({

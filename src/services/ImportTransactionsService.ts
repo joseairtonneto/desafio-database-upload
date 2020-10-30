@@ -22,22 +22,13 @@ class ImportTransactionsService {
 
     const createTransactionService = new CreateTransactionService();
 
-    const transactions: Transaction[] = [];
-    /* eslint-disable */
-     for (const transaction of transactionsCSV) {
-      await createTransactionService.execute( transaction );
+    const transactions: Transaction[] = await Promise.all(
+      transactionsCSV.map(async transaction => {
+        await createTransactionService.execute(transaction);
 
-      transactions.push(transaction);
-    }
-    /* eslint-disable */
-
-    // const transactions: Transaction[] = await Promise.all(
-    //   transactionsCSV.map(async transaction => {
-    //     await createTransactionService.execute(transaction);
-
-    //     return transaction;
-    //   }),
-    // );
+        return transaction;
+      }),
+    );
 
     return transactions;
   }

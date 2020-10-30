@@ -25,13 +25,18 @@ transactionsRouter.get('/', async (request, response) => {
 transactionsRouter.post('/', async (request, response) => {
   const { title, value, type, category } = request.body;
 
+  const transactionsRepository = getCustomRepository(TransactionsRepository);
+
   const createTransactionService = new CreateTransactionService();
+
   const transaction = await createTransactionService.execute({
     title,
     value,
     type,
     category,
   });
+
+  await transactionsRepository.getBalance();
 
   return response.json(transaction);
 });
@@ -48,13 +53,13 @@ transactionsRouter.delete('/:id', async (request, response) => {
 
 transactionsRouter.post(
   '/import',
-  upload.single('transactions'),
+  upload.single('file'),
   async (request, response) => {
-    const updateUserAvatar = new ImportTransactionsService();
+    const importTransactionsService = new ImportTransactionsService();
 
     const { filename } = request.file;
 
-    const transactions = await updateUserAvatar.execute({
+    const transactions = await importTransactionsService.execute({
       transactionsFileName: filename,
     });
 

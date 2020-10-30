@@ -1,4 +1,5 @@
 import { EntityRepository, getRepository, Repository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Transaction from '../models/Transaction';
 
@@ -24,6 +25,8 @@ class TransactionsRepository extends Repository<Transaction> {
       .reduce((acu, cur) => acu + cur.value, 0);
 
     const total = income - outcome;
+
+    if (total < 0) throw new AppError('Invalid');
 
     return { income, outcome, total };
   }
